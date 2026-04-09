@@ -13,25 +13,17 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
-          # Older Flutter needs Java 11 usually
-          java-version: '11'
+          java-version: '11' # Older Flutter versions prefer Java 11
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          # Using an older version to bypass Null Safety requirements
-          flutter-version: '2.10.5'
+          flutter-version: '3.0.5'
           channel: 'stable'
 
       - name: Get Dependencies
         run: flutter pub get
 
       - name: Build APK
-        # Older Flutter versions don't need the --no-tree-shake-icons flag usually
-        run: flutter build apk --debug
-
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: notes-app-apk
-          path: build/app/outputs/flutter-apk/app-debug.apk
+        # The --no-sound-null-safety flag is the secret sauce here
+        run: flutter build apk --debug --no-sound-null-safety
